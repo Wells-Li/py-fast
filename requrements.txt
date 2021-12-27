@@ -1,0 +1,4 @@
+uvicorn[standard]
+gunicorn
+pydantic==1.8.2
+fastapi==0.68.1
