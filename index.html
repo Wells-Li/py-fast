@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css"/>
+
+    <!-- 引入 layui.js -->
+    <script src="https://www.layuicdn.com/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+    <title>Home</title>
+</head>
+<body>
+    <div id="app">
+        <table class="layui-table">
+
+            <tr v-for="p in infos">
+                <td>[[ p.id ]]</td>
+                <td>[[ p.name ]]</td>
+            </tr>
+
+        </table>
+    </div>
+    <table id="test" class="layui-table"></table>
+
+
+<script type="text/javascript">
+    const Vapp = Vue.createApp({
+        data() {
+            return {
+                infos: [{id:1,name:'phyger'}],
+                info: "hello vue..."
+            }
+        },
+        mounted() {
+            this.showinfo();
+        },
+        methods: {
+            showinfo(){
+                axios.get('/test/info')
+                .then(response=>{
+                    this.infos=response.data;
+                    console.log(response);
+                    console.log(this.infos);
+
+                })
+                ,err=>{
+                    console.log(err);
+                };
+            },
+        },
+    })
+    Vapp.config.compilerOptions.delimiters = ['[[', ']]']
+    Vapp.mount('#app')
+</script>
+</body>
+
+</html>

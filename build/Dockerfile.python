@@ -1,0 +1,40 @@
+FROM centos:7
+
+USER root
+#准备环境依赖包
+RUN yum makecache && yum install -y \
+    wget  \
+    zlib-devel  \
+    bzip2-devel  \
+    openssl-devel  \
+    ncurses-devel  \
+    sqlite-devel  \
+    readline-devel  \
+    tk-devel  \
+    gcc  \
+    make  \
+    libffi-devel 
+
+#下载编译包
+RUN cd /usr/local/share/ && \
+    wget  https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz && \
+    tar -zxvf  Python-3.8.9.tgz && cd Python-3.8.9 && \
+    #配置安装位置
+    ./configure prefix=/usr/local/python3  && \
+    #编译安装
+    make && make install
+
+ENV PATH=/usr/local/python3/bin${PATH:+:${PATH}} \
+    POETRY_CACHE_DIR=/var/cache/poetry \
+    #  hack for poetry install 
+    CURL_CA_BUNDLE=""
+#配置python
+
+RUN   echo "CACHEKEY=2022-01-12-01 -> just to force it rebuild"  \
+    && ln -s /usr/local/python3/bin/python3.8 /usr/bin/python3  \
+    && ln -s /usr/local/python3/bin/pip3.8 /usr/bin/pip3  \
+    && pip3 install poetry uvicorn[standard] gunicorn pydantic==1.8.2  fastapi==0.68.1  \
+    && poetry completions bash > /etc/bash_completion.d/poetry.bash-completion \
+    && poetry config virtualenvs.create false \
+    && poetry config repositories.aliyun http://mirrors.aliyun.com/pypi/simple/ \
+    && poetry config cache-dir /var/cache/poetry

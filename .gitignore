@@ -1,0 +1,8 @@
+.idea
+*.pyc
+*.css.map
+.sass-cache/
+__pycache__
+/buildoutput
+*.building
+.DS_Store
